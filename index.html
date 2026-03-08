@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DigitalKu Store — Top Up & Langganan Premium</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a26;
+    --border: rgba(255,255,255,0.07);
+    --accent: #6ee7b7;
+    --accent2: #818cf8;
+    --accent3: #f472b6;
+    --text: #e8e8f0;
+    --muted: #6b7280;
+    --danger: #f87171;
+    --success: #34d399;
+    --warning: #fbbf24;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* BG mesh */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 0%, rgba(110,231,183,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 50% at 80% 100%, rgba(129,140,248,0.08) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-logo span { color: var(--accent); }
+
+  .nav-balance {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 16px 6px 10px;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  .balance-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    z-index: 1;
+    padding: 4rem 2rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(110,231,183,0.1);
+    border: 1px solid rgba(110,231,183,0.25);
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 100px;
+    margin-bottom: 1rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: 1rem;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-sub {
+    color: var(--muted);
+    font-size: 1.05rem;
+    max-width: 500px;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  /* SEARCH & FILTER */
+  .controls {
+    position: relative;
+    z-index: 1;
+    padding: 0 2rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 1rem;
+  }
+
+  .search-input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 14px 10px 40px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-input:focus { border-color: rgba(110,231,183,0.4); }
+  .search-input::placeholder { color: var(--muted); }
+
+  .filter-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .filter-btn:hover, .filter-btn.active {
+    background: rgba(110,231,183,0.1);
+    border-color: rgba(110,231,183,0.3);
+    color: var(--accent);
+  }
+
+  /* MAIN LAYOUT */
+  .main {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem 4rem;
+  }
+
+  /* CATEGORY SECTION */
+  .category-section {
+    margin-bottom: 3rem;
+  }
+
+  .category-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+
+  .category-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(110,231,183,0.2), rgba(129,140,248,0.2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+  }
+
+  .category-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+  }
+
+  .category-count {
+    background: var(--surface2);
+    color: var(--muted);
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+  }
+
+  /* PRODUCT GRID */
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .product-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+  }
+
+  .product-card:hover {
+    border-color: rgba(110,231,183,0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(110,231,183,0.08);
+  }
+
+  .product-img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+  }
+
+  .product-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .product-body {
+    padding: 12px;
+  }
+
+  .product-name {
+    font-weight: 500;
+    font-size: 0.875rem;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .variant-count {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  .product-arrow {
+    position: absolute;
+    top: 10px; right: 10px;
+    width: 24px; height: 24px;
+    background: rgba(110,231,183,0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    color: var(--accent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .product-card:hover .product-arrow { opacity: 1; }
+
+  /* LOADING STATES */
+  .skeleton {
+    background: linear-gradient(90deg, var(--surface) 0%, var(--surface2) 50%, var(--surface) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  .skeleton-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    width: 100%;
+    max-width: 480px;
+    max-height: 85vh;
+    overflow-y: auto;
+    transform: scale(0.95) translateY(20px);
+    transition: transform 0.3s;
+  }
+
+  .modal-overlay.open .modal {
+    transform: scale(1) translateY(0);
+  }
+
+  .modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background: var(--surface);
+    z-index: 10;
+    border-radius: 24px 24px 0 0;
+  }
+
+  .modal-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+
+  .modal-close {
+    width: 32px; height: 32px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 1.1rem;
+    transition: all 0.2s;
+  }
+
+  .modal-close:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+
+  .modal-body { padding: 1.5rem; }
+
+  .variant-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .variant-item {
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .variant-item:hover { border-color: rgba(110,231,183,0.3); }
+  .variant-item.selected { border-color: var(--accent); background: rgba(110,231,183,0.06); }
+
+  .variant-name { font-size: 0.9rem; font-weight: 500; }
+  .variant-stock { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+
+  .variant-price {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--accent);
+  }
+
+  .out-of-stock .variant-price { color: var(--muted); }
+  .out-of-stock { opacity: 0.5; cursor: not-allowed; }
+
+  .order-section {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .order-section label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+
+  .order-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+  }
+
+  .order-input:focus { border-color: rgba(110,231,183,0.4); }
+
+  .qty-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .qty-btn {
+    width: 36px; height: 36px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .qty-btn:hover { border-color: rgba(110,231,183,0.3); color: var(--accent); }
+
+  .qty-display {
+    min-width: 40px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  .order-total {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .order-total-label { font-size: 0.85rem; color: var(--muted); }
+
+  .order-total-amount {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--accent);
+  }
+
+  .btn-primary {
+    width: 100%;
+    background: var(--accent);
+    color: #0a0a0f;
+    border: none;
+    padding: 13px;
+    border-radius: 12px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: -0.01em;
+  }
+
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* TOAST */
+  .toast-container {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .toast {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 250px;
+    max-width: 360px;
+    animation: slideIn 0.3s ease;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+
+  .toast.success { border-left: 3px solid var(--success); }
+  .toast.error { border-left: 3px solid var(--danger); }
+  .toast.info { border-left: 3px solid var(--accent2); }
+
+  @keyframes slideIn {
+    from { transform: translateX(100px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  /* EMPTY / ERROR */
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--muted);
+  }
+
+  .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
+  .empty-state h3 { font-family: 'Syne', sans-serif; color: var(--text); margin-bottom: 0.5rem; }
+
+  /* TRX HISTORY */
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .trx-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .trx-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .trx-ref { font-size: 0.8rem; color: var(--muted); margin-top: 2px; font-family: monospace; }
+
+  .trx-status {
+    font-size: 0.75rem;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-weight: 500;
+  }
+
+  .trx-status.paid { background: rgba(52,211,153,0.15); color: var(--success); }
+  .trx-status.pending { background: rgba(251,191,36,0.15); color: var(--warning); }
+  .trx-status.failed { background: rgba(248,113,113,0.15); color: var(--danger); }
+
+  .trx-amount {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 2rem;
+    width: fit-content;
+  }
+
+  .tab {
+    padding: 8px 20px;
+    border-radius: 9px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--muted);
+    border: none;
+    background: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .tab.active {
+    background: var(--surface2);
+    color: var(--text);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* RESULT MODAL */
+  .result-icon {
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .result-data {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    font-family: monospace;
+    white-space: pre-wrap;
+    word-break: break-all;
+    color: var(--accent);
+    line-height: 1.6;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 2rem; }
+    .controls { flex-direction: column; }
+    .product-grid { grid-template-columns: repeat(2, 1fr); }
+    nav { padding: 0 1rem; }
+    .hero, .controls, .main { padding-left: 1rem; padding-right: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">⚡ Digita<span>lKu</span></div>
+  <div class="nav-balance" id="balanceDisplay">
+    <div class="balance-dot"></div>
+    <span id="balanceText">Memuat saldo...</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">🔥 Powered by SekaliPay</div>
+  <h1>Top Up & Langganan<br><em>Digital Premium</em></h1>
+  <p class="hero-sub">Ribuan produk digital tersedia. Proses instan, harga terbaik, transaksi aman.</p>
+</div>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" class="search-input" id="searchInput" placeholder="Cari produk... (Netflix, Spotify, Mobile Legend...)">
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('catalog')">📦 Katalog</button>
+    <button class="tab" onclick="switchTab('history')">📋 Riwayat</button>
+  </div>
+
+  <div class="tab-content active" id="tab-catalog">
+    <div id="catalogContainer">
+      <!-- skeleton -->
+      <div id="loadingSkeleton">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;">
+          ${Array(8).fill(`
+            <div class="skeleton-card">
+              <div class="skeleton" style="height:100px;"></div>
+              <div style="padding:12px">
+                <div class="skeleton" style="height:14px;margin-bottom:8px;border-radius:4px"></div>
+                <div class="skeleton" style="height:11px;width:60%;border-radius:4px"></div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="tab-history">
+    <div id="historyContainer">
+      <div class="empty-state">
+        <div class="icon">📋</div>
+        <h3>Belum ada transaksi</h3>
+        <p>Transaksi yang berhasil akan muncul di sini</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Product Variants -->
+<div class="modal-overlay" id="productModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalProductName">Pilih Variant</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="variant-list" id="variantList"></div>
+      <div class="order-section" id="orderSection" style="display:none">
+        <label>Catatan / ID (Opsional)</label>
+        <input type="text" class="order-input" id="orderNote" placeholder="cth: ID game, email akun...">
+        <label>Jumlah</label>
+        <div class="qty-wrap">
+          <button class="qty-btn" onclick="changeQty(-1)">−</button>
+          <div class="qty-display" id="qtyDisplay">1</div>
+          <button class="qty-btn" onclick="changeQty(1)">+</button>
+        </div>
+        <div class="order-total">
+          <span class="order-total-label">Total Pembayaran</span>
+          <span class="order-total-amount" id="orderTotalAmount">Rp 0</span>
+        </div>
+        <button class="btn-primary" id="btnOrder" onclick="submitOrder()">🛒 Beli Sekarang</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Result -->
+<div class="modal-overlay" id="resultModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="resultTitle">Status Transaksi</div>
+      <button class="modal-close" onclick="closeResultModal()">✕</button>
+    </div>
+    <div class="modal-body" id="resultBody"></div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+const API_BASE = 'https://sekalipay.com/api/v1';
+const API_KEY = 'YZVra5zevtPGJJP5VzKe0dVfbFGFJaEP';
+
+const headers = {
+  'X-APIKEY': API_KEY,
+  'Accept': 'application/json',
+  'Content-Type': 'application/json'
+};
+
+let allCategories = [];
+let selectedVariant = null;
+let qty = 1;
+let transactions = [];
+
+// ── API CALLS ─────────────────────────────────────────────
+async function apiFetch(path, options = {}) {
+  const res = await fetch(`${API_BASE}${path}`, {
+    ...options,
+    headers: { ...headers, ...(options.headers || {}) }
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Gagal memuat data');
+  return data;
+}
+
+// ── BALANCE ───────────────────────────────────────────────
+async function loadBalance() {
+  try {
+    const data = await apiFetch('/balance');
+    const bal = data.data?.balance ?? data.balance ?? 0;
+    document.getElementById('balanceText').textContent = 'Saldo: ' + formatRp(bal);
+  } catch (e) {
+    document.getElementById('balanceText').textContent = 'Saldo tidak tersedia';
+  }
+}
+
+// ── ITEMS ─────────────────────────────────────────────────
+async function loadItems(search = '') {
+  const container = document.getElementById('catalogContainer');
+  
+  try {
+    const params = new URLSearchParams({ per_page: 'all' });
+    if (search) params.append('search', search);
+
+    const data = await apiFetch(`/item?${params}`);
+    allCategories = data.data || [];
+    renderCatalog(allCategories);
+  } catch (e) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="icon">⚠️</div>
+        <h3>Gagal memuat produk</h3>
+        <p>${e.message}</p>
+      </div>`;
+  }
+}
+
+function renderCatalog(categories) {
+  const container = document.getElementById('catalogContainer');
+  
+  if (!categories.length) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="icon">🔍</div>
+        <h3>Produk tidak ditemukan</h3>
+        <p>Coba kata kunci lain</p>
+      </div>`;
+    return;
+  }
+
+  const catIcons = ['🎮','📱','🎬','🎵','☁️','🔑','🛡️','📺','🌐','🎯'];
+  
+  container.innerHTML = categories.map((cat, ci) => {
+    const products = cat.products || [];
+    if (!products.length) return '';
+    
+    return `
+      <div class="category-section">
+        <div class="category-header">
+          <div class="category-icon">${catIcons[ci % catIcons.length]}</div>
+          <div class="category-name">${escHtml(cat.name)}</div>
+          <div class="category-count">${products.length}</div>
+        </div>
+        <div class="product-grid">
+          ${products.map(p => renderProductCard(p)).join('')}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function renderProductCard(product) {
+  const allVariants = product.variants || [];
+  const hasStock = allVariants.some(v => v.stock > 0);
+  const minPrice = allVariants.length ? Math.min(...allVariants.map(v => v.price)) : 0;
+  
+  const imgContent = product.image
+    ? `<img src="https://sekalipay.com/storage/${product.image}" alt="${escHtml(product.name)}" onerror="this.parentElement.innerHTML='🛍️'">`
+    : '🛍️';
+
+  return `
+    <div class="product-card" onclick="openProduct(${JSON.stringify(product).replace(/"/g, '&quot;')})">
+      <div class="product-img">${imgContent}</div>
+      <div class="product-body">
+        <div class="product-name">${escHtml(product.name)}</div>
+        <div class="variant-count">
+          ${hasStock ? `ab ${formatRp(minPrice)}` : '⛔ Stok habis'} · ${allVariants.length} variant
+        </div>
+      </div>
+      <div class="product-arrow">→</div>
+    </div>`;
+}
+
+// ── MODAL ─────────────────────────────────────────────────
+function openProduct(product) {
+  selectedVariant = null;
+  qty = 1;
+  document.getElementById('qtyDisplay').textContent = '1';
+  document.getElementById('orderNote').value = '';
+  document.getElementById('orderSection').style.display = 'none';
+  document.getElementById('modalProductName').textContent = product.name;
+
+  const variants = product.variants || [];
+  const list = document.getElementById('variantList');
+  
+  list.innerHTML = variants.length
+    ? variants.map(v => `
+        <div class="variant-item ${v.stock === 0 ? 'out-of-stock' : ''}" 
+             onclick="${v.stock > 0 ? `selectVariant(${v.id},${v.price},'${escHtml(v.name)}')` : ''}">
+          <div>
+            <div class="variant-name">${escHtml(v.name)}</div>
+            <div class="variant-stock">${v.stock > 0 ? `Stok: ${v.stock}` : 'Habis'}</div>
+          </div>
+          <div class="variant-price">${v.stock > 0 ? formatRp(v.price) : 'Habis'}</div>
+        </div>`).join('')
+    : '<div class="empty-state" style="padding:2rem"><p>Tidak ada variant tersedia</p></div>';
+
+  document.getElementById('productModal').classList.add('open');
+}
+
+function selectVariant(id, price, name) {
+  selectedVariant = { id, price, name };
+  qty = 1;
+  document.getElementById('qtyDisplay').textContent = '1';
+  updateTotal();
+
+  document.querySelectorAll('.variant-item').forEach(el => el.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  document.getElementById('orderSection').style.display = 'block';
+}
+
+function changeQty(delta) {
+  qty = Math.max(1, qty + delta);
+  document.getElementById('qtyDisplay').textContent = qty;
+  updateTotal();
+}
+
+function updateTotal() {
+  if (!selectedVariant) return;
+  document.getElementById('orderTotalAmount').textContent = formatRp(selectedVariant.price * qty);
+}
+
+function closeModal() {
+  document.getElementById('productModal').classList.remove('open');
+}
+
+// ── ORDER ─────────────────────────────────────────────────
+async function submitOrder() {
+  if (!selectedVariant) return;
+  const btn = document.getElementById('btnOrder');
+  const note = document.getElementById('orderNote').value.trim();
+  const refId = 'TRX-' + Date.now();
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Memproses...';
+
+  try {
+    const data = await apiFetch('/trx', {
+      method: 'POST',
+      body: JSON.stringify({
+        ref_id: refId,
+        carts: [{ item_id: selectedVariant.id, quantity: qty, note: note || undefined }]
+      })
+    });
+
+    closeModal();
+    showToast('✅ Transaksi berhasil!', 'success');
+    addToHistory(data.data, selectedVariant);
+    loadBalance();
+    showResult(true, data.data);
+
+  } catch (e) {
+    showToast('❌ ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🛒 Beli Sekarang';
+  }
+}
+
+function addToHistory(trxData, variant) {
+  transactions.unshift({ trxData, variant, time: new Date() });
+  renderHistory();
+}
+
+// ── HISTORY ───────────────────────────────────────────────
+async function loadHistory() {
+  if (transactions.length) { renderHistory(); return; }
+  try {
+    const data = await apiFetch('/trx?per_page=20');
+    const trxList = data.data || [];
+    document.getElementById('historyContainer').innerHTML = trxList.length
+      ? `<div class="trx-list">${trxList.map(t => renderTrxItem(t)).join('')}</div>`
+      : `<div class="empty-state"><div class="icon">📋</div><h3>Belum ada transaksi</h3></div>`;
+  } catch (e) {
+    document.getElementById('historyContainer').innerHTML =
+      `<div class="empty-state"><div class="icon">⚠️</div><h3>${e.message}</h3></div>`;
+  }
+}
+
+function renderHistory() {
+  const container = document.getElementById('historyContainer');
+  if (!transactions.length) { loadHistory(); return; }
+  container.innerHTML = `<div class="trx-list">${transactions.map(({ trxData, time }) => renderTrxItem(trxData, time)).join('')}</div>`;
+}
+
+function renderTrxItem(t, time) {
+  const statusClass = t.status === 'paid' ? 'paid' : t.status === 'pending' ? 'pending' : 'failed';
+  const statusLabel = t.status === 'paid' ? '✅ Berhasil' : t.status === 'pending' ? '⏳ Pending' : '❌ Gagal';
+  const timeStr = time ? time.toLocaleTimeString('id-ID') : '';
+  return `
+    <div class="trx-item">
+      <div>
+        <div style="font-weight:500;font-size:.9rem">${escHtml(t.invoice || t.ref_id || '-')}</div>
+        <div class="trx-ref">${escHtml(t.ref_id || '')} ${timeStr}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="trx-amount">${formatRp(t.amount || 0)}</div>
+        <span class="trx-status ${statusClass}">${statusLabel}</span>
+      </div>
+    </div>`;
+}
+
+// ── RESULT MODAL ──────────────────────────────────────────
+function showResult(success, data) {
+  const modal = document.getElementById('resultModal');
+  document.getElementById('resultTitle').textContent = success ? '✅ Transaksi Berhasil' : '❌ Gagal';
+  document.getElementById('resultBody').innerHTML = `
+    <div style="text-align:center;margin-bottom:1rem">
+      <div class="result-icon">${success ? '🎉' : '😢'}</div>
+      <p>${success ? 'Pembayaran berhasil diproses!' : 'Transaksi gagal diproses.'}</p>
+    </div>
+    <div class="result-data">${JSON.stringify(data, null, 2)}</div>
+    <button class="btn-primary" style="margin-top:1rem" onclick="closeResultModal()">Tutup</button>`;
+  modal.classList.add('open');
+}
+
+function closeResultModal() {
+  document.getElementById('resultModal').classList.remove('open');
+}
+
+// ── TABS ──────────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+  if (tab === 'history') loadHistory();
+}
+
+// ── TOAST ─────────────────────────────────────────────────
+function showToast(msg, type = 'info') {
+  const tc = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = msg;
+  tc.appendChild(toast);
+  setTimeout(() => toast.remove(), 4000);
+}
+
+// ── UTILS ─────────────────────────────────────────────────
+function formatRp(n) {
+  return 'Rp ' + Number(n).toLocaleString('id-ID');
+}
+
+function escHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ── SEARCH DEBOUNCE ───────────────────────────────────────
+let searchTimer;
+document.getElementById('searchInput').addEventListener('input', e => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => loadItems(e.target.value), 400);
+});
+
+// Close modal on overlay click
+document.getElementById('productModal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeModal();
+});
+document.getElementById('resultModal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeResultModal();
+});
+
+// ── INIT ──────────────────────────────────────────────────
+loadBalance();
+loadItems();
+</script>
+</body>
+</html>
