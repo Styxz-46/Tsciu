@@ -695,6 +695,60 @@
     overflow-y: auto;
   }
 
+  /* TOPUP NAV BTN */
+  .topup-nav-btn {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #0a0a0f;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 100px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .topup-nav-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  .channel-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .channel-item {
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .channel-item:hover { border-color: rgba(110,231,183,0.3); }
+  .channel-item.selected { border-color: var(--accent); background: rgba(110,231,183,0.06); }
+  .channel-name { font-size: 0.85rem; font-weight: 500; }
+  .channel-fee { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+
+  .amount-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .preset-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .preset-btn:hover { border-color: rgba(110,231,183,0.3); color: var(--accent); }
+
   /* RESPONSIVE */
   @media (max-width: 640px) {
     .hero h1 { font-size: 2rem; }
@@ -710,9 +764,12 @@
 <!-- NAV -->
 <nav>
   <div class="nav-logo">⚡ Digita<span>lKu</span></div>
-  <div class="nav-balance" id="balanceDisplay">
-    <div class="balance-dot"></div>
-    <span id="balanceText">Memuat saldo...</span>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div class="nav-balance" id="balanceDisplay">
+      <div class="balance-dot"></div>
+      <span id="balanceText">Memuat saldo...</span>
+    </div>
+    <button class="topup-nav-btn" onclick="openTopup()">+ Top Up</button>
   </div>
 </nav>
 
@@ -803,6 +860,47 @@
       <button class="modal-close" onclick="closeResultModal()">✕</button>
     </div>
     <div class="modal-body" id="resultBody"></div>
+  </div>
+</div>
+
+<!-- MODAL: Top Up -->
+<div class="modal-overlay" id="topupModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">💳 Top Up Saldo</div>
+      <button class="modal-close" onclick="closeTopup()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="margin-bottom:1rem">
+        <label style="display:block;font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Pilih Nominal</label>
+        <div class="amount-presets">
+          <button class="preset-btn" onclick="setAmount(10000)">Rp 10.000</button>
+          <button class="preset-btn" onclick="setAmount(25000)">Rp 25.000</button>
+          <button class="preset-btn" onclick="setAmount(50000)">Rp 50.000</button>
+          <button class="preset-btn" onclick="setAmount(100000)">Rp 100.000</button>
+          <button class="preset-btn" onclick="setAmount(200000)">Rp 200.000</button>
+          <button class="preset-btn" onclick="setAmount(500000)">Rp 500.000</button>
+        </div>
+        <input type="number" class="order-input" id="topupAmount" placeholder="Nominal lain (min. Rp 10.000)" min="10000" oninput="updateTopupSummary()">
+      </div>
+
+      <div style="margin-bottom:1rem">
+        <label style="display:block;font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Metode Pembayaran</label>
+        <div class="channel-grid" id="channelGrid">
+          <div style="grid-column:1/-1;text-align:center;padding:1rem;color:var(--muted);font-size:.85rem">⏳ Memuat channel...</div>
+        </div>
+      </div>
+
+      <div class="order-total" id="topupSummary" style="display:none">
+        <div>
+          <div class="order-total-label">Total Bayar</div>
+          <div style="font-size:.75rem;color:var(--muted);margin-top:2px" id="topupFeeNote"></div>
+        </div>
+        <span class="order-total-amount" id="topupTotal">Rp 0</span>
+      </div>
+
+      <button class="btn-primary" id="btnTopup" onclick="submitTopup()" style="margin-top:4px">💳 Buat Pembayaran</button>
+    </div>
   </div>
 </div>
 
@@ -1110,6 +1208,120 @@ document.getElementById('productModal').addEventListener('click', e => {
 });
 document.getElementById('resultModal').addEventListener('click', e => {
   if (e.target === e.currentTarget) closeResultModal();
+});
+
+// ── TOP UP ────────────────────────────────────────────────
+let channels = [];
+let selectedChannel = null;
+
+async function openTopup() {
+  selectedChannel = null;
+  document.getElementById('topupAmount').value = '';
+  document.getElementById('topupSummary').style.display = 'none';
+  document.getElementById('topupModal').classList.add('open');
+
+  if (!channels.length) await loadChannels();
+  renderChannels();
+}
+
+async function loadChannels() {
+  try {
+    const data = await apiFetch('/balance/channels');
+    channels = data.data || [];
+  } catch (e) {
+    channels = [];
+    showToast('Gagal memuat channel: ' + e.message, 'error');
+  }
+}
+
+function renderChannels() {
+  const grid = document.getElementById('channelGrid');
+  if (!channels.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--muted);font-size:.85rem;padding:1rem">Tidak ada channel tersedia</div>';
+    return;
+  }
+  grid.innerHTML = channels.map(c => `
+    <div class="channel-item" onclick="selectChannel('${c.code}', ${c.fee})" id="ch-${c.code}">
+      <div class="channel-name">${escHtml(c.name)}</div>
+      <div class="channel-fee">Admin: ${formatRp(c.fee)}</div>
+    </div>`).join('');
+}
+
+function selectChannel(code, fee) {
+  selectedChannel = { code, fee };
+  document.querySelectorAll('.channel-item').forEach(el => el.classList.remove('selected'));
+  document.getElementById('ch-' + code).classList.add('selected');
+  updateTopupSummary();
+}
+
+function setAmount(val) {
+  document.getElementById('topupAmount').value = val;
+  updateTopupSummary();
+}
+
+function updateTopupSummary() {
+  const amount = parseInt(document.getElementById('topupAmount').value) || 0;
+  const summary = document.getElementById('topupSummary');
+  if (amount >= 10000 && selectedChannel) {
+    const total = amount + selectedChannel.fee;
+    document.getElementById('topupTotal').textContent = formatRp(total);
+    document.getElementById('topupFeeNote').textContent = `${formatRp(amount)} + admin ${formatRp(selectedChannel.fee)}`;
+    summary.style.display = 'flex';
+  } else {
+    summary.style.display = 'none';
+  }
+}
+
+async function submitTopup() {
+  const amount = parseInt(document.getElementById('topupAmount').value) || 0;
+  if (amount < 10000) { showToast('Minimal top up Rp 10.000', 'error'); return; }
+  if (!selectedChannel) { showToast('Pilih metode pembayaran dulu', 'error'); return; }
+
+  const btn = document.getElementById('btnTopup');
+  btn.disabled = true;
+  btn.textContent = '⏳ Memproses...';
+
+  try {
+    const data = await apiFetch('/balance', {
+      method: 'POST',
+      body: JSON.stringify({ amount, channel: selectedChannel.code })
+    });
+
+    closeTopup();
+    const payUrl = data.data?.payment_url;
+    if (payUrl) {
+      // Show payment link modal
+      document.getElementById('resultTitle').textContent = '💳 Link Pembayaran';
+      document.getElementById('resultBody').innerHTML = `
+        <div style="text-align:center;margin-bottom:1.2rem">
+          <div class="result-icon">🔗</div>
+          <p style="margin-bottom:.5rem">Pembayaran <strong>${formatRp(amount)}</strong> via <strong>${selectedChannel.code}</strong> siap!</p>
+          <p style="font-size:.82rem;color:var(--muted)">Klik tombol di bawah untuk melanjutkan pembayaran.</p>
+        </div>
+        <a href="${escHtml(payUrl)}" target="_blank" style="display:block;text-decoration:none">
+          <button class="btn-primary" style="margin-bottom:8px">🔗 Bayar Sekarang</button>
+        </a>
+        <div class="result-data" style="word-break:break-all;font-size:.75rem">${escHtml(payUrl)}</div>
+        <button class="btn-primary" style="margin-top:10px;background:var(--surface2);color:var(--text)" onclick="closeResultModal()">Tutup</button>`;
+      document.getElementById('resultModal').classList.add('open');
+    } else {
+      showToast('✅ Top up berhasil diproses!', 'success');
+      loadBalance();
+    }
+  } catch (e) {
+    showToast('❌ ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '💳 Buat Pembayaran';
+  }
+}
+
+function closeTopup() {
+  document.getElementById('topupModal').classList.remove('open');
+}
+
+document.getElementById('topupModal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeTopup();
 });
 
 // ── INIT ──────────────────────────────────────────────────
